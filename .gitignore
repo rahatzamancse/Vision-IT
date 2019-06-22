@@ -1,0 +1,12 @@
+
+monitor/\.idea/
+
+monitor/visionit/__pycache__/
+
+monitor/monitor/__pycache__/
+
+project/__pycache__/
+
+project/model/__pycache__/
+
+project/speak\.mp3
