@@ -12,7 +12,6 @@ VIB = 40
 VIB_pin = GPIO.PWM(VIB, 1000)     # set Frequece to 1KHz
 VIB_pin.start(0)                     # Start PWM output, Duty Cycle = 0
 
-
 def distance():
     def distance():
         GPIO.output(TRIG, True)
@@ -37,19 +36,27 @@ def distance():
         return distance
 
 
-range_low = 0
-range_high = 50
-counter = 0
+ranges = [(10, 50, 1), (51, 1000, 0)]
+r_counter = [0] * len(ranges)
+r_thresh = 10
 try:
     while True:
         dist = distance()
-        if range_low <= dist <= range_high:
-            counter += 1
-        if counter >= 10:
-            VIB_pin.ChangeDutyCycle(80)
-            time.sleep(2)
-            VIB_pin.ChangeDutyCycle(0)
-            counter = 0
+        print(dist)
+        for i, (rl, rh, v) in enumerate(ranges):
+            if rl <= dist <= rh:
+                r_counter[i] += 1
+                for j in range(len(r_counter)):
+                    if j != i:
+                        r_counter[j] = 0
+
+            for j, c in enumerate(r_counter):
+                if c >= r_thresh:
+                    VIB_pin.ChangeDutyCycle(int(100 * v))
+                    time.sleep(2)
+                    VIB_pin.ChangeDutyCycle(0)
+                    r_counter = [0] * len(ranges)
+
 except KeyboardInterrupt:
     VIB_pin.stop()
     GPIO.cleanup()
