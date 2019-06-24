@@ -9,7 +9,7 @@ from textblob import TextBlob
 from gtts import gTTS
 import subprocess
 import os
-from model.yolo_tiny import Yolo
+from model.yolo import Yolo
 from util import *
 import RPi.GPIO as GPIO
 
@@ -19,17 +19,11 @@ LEARN = 3
 GPIO.setup(ANALYZE, GPIO.IN)
 GPIO.setup(LEARN, GPIO.IN)
 
-camera = cv2.VideoCapture(0)
 model = Yolo()
 
 def get_button_input():
-    """
-    :return: (str) Command for server
-    analyze
-    learn [name]
-    learn auto
-    """
-
+    # a = input('command :')
+    # return a
     thresh = 5
     analyze_cnt = 0
     learn_cnt = 0
@@ -51,8 +45,10 @@ def get_button_input():
             return 'learn'
 
 def get_img_from_cam():
+    camera = cv2.VideoCapture(0)
     _, img = camera.read()
-    img = cv2.resize(img, (932, 500))
+    img = cv2.resize(img, (1864, 1000))
+    camera.release()
     return img
 
 
@@ -71,6 +67,7 @@ def translate(txt, lang):
 
 with open('encoded_faces.dat', 'rb') as f:
     known_name_encodings = pickle.load(f)
+    print('Previously saves persons list :', list(known_name_encodings.keys()))
 
 while True:
     command = get_button_input()
@@ -95,15 +92,10 @@ while True:
 
         for i, (cls, box) in enumerate(zip(classes, boxes)):
             img_cropped = img[int(box[1]):int(box[1] + box[3]), int(box[0]):int(box[0] + box[2])]
-            # cv2.imshow('sdaf', img_cropped)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
 
             if cls != 'person':
                 continue
 
-            # print(box)
-            # cur_face = img[int(box[0]):int(box[0] + box[2]), int(box[1]):int(box[1] + box[3])]
             cur_face = img[int(box[1]):int(box[1] + box[3]), int(box[0]):int(box[0] + box[2])]
 
             cur_face_encoding = face_recognition.face_encodings(cur_face)
@@ -114,12 +106,8 @@ while True:
 
             face_dists = {a:10 for a in known_name_encodings.keys()}
             for known_name, known_face_encoding in known_name_encodings.items():
-                # res = face_recognition.compare_faces(known_single_face_encodings, cur_face_encoding, tolerance=0.2)
                 face_dists[known_name] = face_recognition.face_distance(known_face_encoding, cur_face_encoding)
 
-            # print(face_dists)
-
-            # print(face_dists)
             match = None
             name, face_dist = max(face_dists.items(), key=operator.itemgetter(1))
             if face_dist <= 0.6:
@@ -133,8 +121,6 @@ while True:
         if boxes != []:
             object_centers = np.array(boxes)
             object_centers = object_centers[:, [0, 1]] + (object_centers[:, [2, 3]] // 2)
-            # object_centers /= np.array([img.shape[1], img.shape[0]])
-            # dists = object_centers - 0.5
             dists = object_centers - np.array([img.shape[1] // 2, img.shape[0] // 2])
             x_dists = dists[:, 0]
             y_dists = dists[:, 1]
@@ -274,13 +260,12 @@ while True:
         for cls, box in zip(sorted_classes, sorted_boxes):
             if cls != 'person':
                 continue
-            img_person = img[int(box[0]):int(box[0] + box[2]), int(box[1]):int(box[1] + box[3])]
-
+            img_person = img[int(box[1]):int(box[1] + box[3]), int(box[0]):int(box[0] + box[2])]
             break
 
-        cv2.imshow('person', img_person)
-        cv2.waitKey()
-        cv2.destroyAllWindows()
+        # cv2.imshow('person', img_person)
+        # cv2.waitKey()
+        # cv2.destroyAllWindows()
 
         if img_person is not None:
             face_encoded = face_recognition.face_encodings(img_person)
@@ -292,7 +277,8 @@ while True:
 
             with open('encoded_faces.dat', 'wb') as f:
                 print('new person saved')
-                known_name_encodings = pickle.dump(known_name_encodings, f)
+                pickle.dump(known_name_encodings, f)
 
-            cv2.imwrite('../monitor/static/' + name + '.jpg', img_person)
+            pprint(known_name_encodings)
+            cv2.imwrite('../monitor/static/persons/' + name + '.jpg', img_person)
 
