@@ -14,5 +14,3 @@ project/speak\.mp3
 \.idea/
 
 monitor/__pycache__/
-
-monitor/static/persons/
