@@ -1,6 +1,7 @@
 import json
 import operator
 import pickle
+import time
 from pprint import pprint
 import cv2
 import face_recognition
@@ -10,10 +11,14 @@ import subprocess
 import os
 from model.yolo_tiny import Yolo
 from util import *
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
-# GPIO.setmode(GPIO.BOARD)
-# GPIO.setup(3, GPIO.OUT)
+GPIO.setmode(GPIO.BCM)
+ANALYZE = 2
+LEARN = 3
+GPIO.setup(ANALYZE, GPIO.IN)
+GPIO.setup(LEARN, GPIO.IN)
+
 camera = cv2.VideoCapture(0)
 model = Yolo()
 
@@ -24,11 +29,26 @@ def get_button_input():
     learn [name]
     learn auto
     """
-    # button.wait_for_press()
-    print("analyze / learn <name>")
-    comname = input('Enter Command :')
-    return comname
 
+    thresh = 5
+    analyze_cnt = 0
+    learn_cnt = 0
+    while True:
+        analyze_val = GPIO.input(ANALYZE)
+        learn_val = GPIO.input(LEARN)
+        if analyze_val == 1:
+            analyze_cnt += 1
+            learn_cnt = 0
+        elif learn_val == 1:
+            learn_cnt += 1
+            analyze_cnt = 0
+        else:
+            learn_cnt = 0
+            analyze_cnt = 0
+        if analyze_cnt >= thresh:
+            return 'analyze'
+        if learn_cnt >= thresh:
+            return 'learn'
 
 def get_img_from_cam():
     _, img = camera.read()
@@ -51,8 +71,6 @@ def translate(txt, lang):
 
 with open('encoded_faces.dat', 'rb') as f:
     known_name_encodings = pickle.load(f)
-known_names = list(known_name_encodings.keys())
-known_face_encodings = list(known_name_encodings.values())
 
 while True:
     command = get_button_input()
@@ -94,11 +112,10 @@ while True:
             else:
                 break
 
-            face_dists = {name: 10 for name in known_names}
-            for known_name, known_single_face_encodings in zip(known_names, known_face_encodings):
+            face_dists = {a:10 for a in known_name_encodings.keys()}
+            for known_name, known_face_encoding in known_name_encodings.items():
                 # res = face_recognition.compare_faces(known_single_face_encodings, cur_face_encoding, tolerance=0.2)
-                face_dist = face_recognition.face_distance(known_single_face_encodings, cur_face_encoding)
-                face_dists[known_name] = np.mean(face_dist)
+                face_dists[known_name] = face_recognition.face_distance(known_face_encoding, cur_face_encoding)
 
             # print(face_dists)
 
@@ -227,19 +244,25 @@ while True:
         positional_desc_bn = translate(positional_desc, lang)
         speak(positional_desc_bn, lang, False)
 
-    elif command[:5] == 'learn':
-        name = command[5:]
+    elif command == 'learn':
+        n = 1
+        if len(known_name_encodings) > 0:
+            n = len(known_name_encodings)
+
+        name = 'person' + str(n)
+
         img = get_img_from_cam()
 
         center = (img.shape[1] // 2, img.shape[0] // 2)
         res = model.predict(img)
+
 
         boxes = res['boxes']
         classes = res['classes']
 
         object_centers = np.array(boxes)
         object_centers = object_centers[:, [0, 1]] + (object_centers[:, [2, 3]] // 2)
-        dists = object_centers - np.array([img.shape[1] // 2, img.shape[0] // 2])
+        dists = object_centers - np.array([img.shape[0] // 2, img.shape[1] // 2])
         x_dists = dists[:, 0]
         y_dists = dists[:, 1]
         dists = np.sqrt(x_dists * x_dists + y_dists * y_dists)
@@ -253,13 +276,23 @@ while True:
                 continue
             img_person = img[int(box[0]):int(box[0] + box[2]), int(box[1]):int(box[1] + box[3])]
 
-            # cv2.imshow('center single person:' + name, img_person)
-            # cv2.waitKey()
-            # cv2.destroyAllWindows()
-
             break
 
+        cv2.imshow('person', img_person)
+        cv2.waitKey()
+        cv2.destroyAllWindows()
+
         if img_person is not None:
-            face_encoded = face_recognition.face_encodings(img)[0]
-            print(face_encoded)
+            face_encoded = face_recognition.face_encodings(img_person)
+            if len(face_encoded) <= 0:
+                continue
+            else:
+                face_encoded = face_encoded[0]
+            known_name_encodings[name] = face_encoded
+
+            with open('encoded_faces.dat', 'wb') as f:
+                print('new person saved')
+                known_name_encodings = pickle.dump(known_name_encodings, f)
+
+            cv2.imwrite('../monitor/static/' + name + '.jpg', img_person)
 

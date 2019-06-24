@@ -1,0 +1,31 @@
+{% extends "visionit/base.html" %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container mt-5">
+    <div class="row">
+
+
+        {% for name in persons %}
+            <div class="col-4 mb-5">
+                <div class="card">
+                    <form action="{% url "renamepost" name %}" method="get" class="post-form">{% csrf_token %}
+                        {% with 'persons/'|add:name|add:'.jpg' as image_static %}
+                            <img class="card-img-top" src="{% static image_static %}" style="max-height:300px; object-fit: contain" alt="Face">
+                        {% endwith %}
+                        <div class="card-body">
+                            <label for="name" class="label">Name</label><input id="name" type="text" name="name" class="form-control" value="{{ name }}">
+                            <input type="submit" class="form-control btn btn-primary mt-3"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+
+
+    </div>
+</div>
+
+{% endblock content %}

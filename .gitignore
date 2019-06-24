@@ -10,3 +10,7 @@ project/__pycache__/
 project/model/__pycache__/
 
 project/speak\.mp3
+
+\.idea/
+
+monitor/__pycache__/
