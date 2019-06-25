@@ -30,10 +30,10 @@ def get_button_input():
     while True:
         analyze_val = GPIO.input(ANALYZE)
         learn_val = GPIO.input(LEARN)
-        if analyze_val == 1:
+        if analyze_val == 0:
             analyze_cnt += 1
             learn_cnt = 0
-        elif learn_val == 1:
+        elif learn_val == 0:
             learn_cnt += 1
             analyze_cnt = 0
         else:
