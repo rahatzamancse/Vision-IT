@@ -50,3 +50,6 @@ def change_name(request, prev_name):
         name = ''.join(file.split('.')[:-1])
         context['persons'].append(name)
     return render(request, 'visionit/rename.html', context=context)
+
+def map(request):
+    return render(request, 'visionit/map.html')
