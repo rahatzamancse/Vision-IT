@@ -9,7 +9,7 @@ from textblob import TextBlob
 from gtts import gTTS
 import subprocess
 import os
-from model.yolo import Yolo
+from model.yolo_tiny import Yolo
 from util import *
 import RPi.GPIO as GPIO
 
