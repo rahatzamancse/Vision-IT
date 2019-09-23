@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,9 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
 
-    <title>Hello, world!</title>
+    <title>VISION IT</title>
 </head>
 <body>
 
@@ -28,16 +30,50 @@
                 <a class="nav-link" href="{% url "rename" %}">Rename Persons</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{% url "map" %}" tabindex="-1">Direction Helper</a>
+                <a class="nav-link" href="{% url "map" %}" tabindex="-1">Location</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Location</a>
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Direction Helper (coming soon)</a>
             </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+	<ul class="navbar-nav ml-auto">
+		<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				Language
+			</a>
+			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+				<a class="dropdown-item" href="{% url "lang" lang="en" %}">English</a>
+				<div class="dropdown-divider"></div>
+				<a class="dropdown-item" href="{% url "lang" lang="bn" %}">Bangla</a>
+				<a class="dropdown-item" href="{% url "lang" lang="th" %}">Thai</a>
+				<a class="dropdown-item" href="{% url "lang" lang="hi" %}">Hindi</a>
+				<div class="dropdown-divider"></div>
+				<a class="dropdown-item" href="{% url "lang" lang="ar" %}">Arabic</a>
+				<a class="dropdown-item" href="{% url "lang" lang="fr" %}">French</a>
+				<a class="dropdown-item" href="{% url "lang" lang="id" %}">Indonesian</a>
+				<a class="dropdown-item" href="{% url "lang" lang="it" %}">Italian</a>
+				<a class="dropdown-item" href="{% url "lang" lang="ru" %}">Russian</a>
+				<a class="dropdown-item" href="{% url "lang" lang="es" %}">Spanish</a>
+				<a class="dropdown-item" href="{% url "lang" lang="ta" %}">Tamil</a>
+				<a class="dropdown-item" href="{% url "lang" lang="te" %}">Telugu</a>
+				<a class="dropdown-item" href="{% url "lang" lang="fil" %}">Filipino</a>
+			</div>
+		</li>
+		<li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				Emergency
+			</a>
+			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+				<a class="dropdown-item" href="#">Send location</a>
+				<div class="dropdown-divider"></div>
+				<a class="dropdown-item" href="#">Text Message (Coming soon)</a>
+			<a class="dropdown-item" href="#">Phone call (Coming soon)</a>
+		  </div>
+		</li>
+		<li>
+			<a class="nav-link" href="{% url "index" %}" >Refresh</a>
+		</li>
+	</ul>
     </div>
 </nav>
 
@@ -45,15 +81,47 @@
 
 <footer class="page-footer font-small blue">
     <div class="footer-copyright text-center py-3">© 2019 Copyright:
-        <a href="https://mdbootstrap.com/education/bootstrap/">Shadmaan Hye</a>
+        <a href="https://www.linkedin.com/in/prapti-shadmaan-bba999165/">Shadmaan Hye</a>
     </div>
 </footer>
 <!-- Footer -->
 
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script> -->
+<script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/wait.js' %}"></script>
+<script>
+var interval;
+function callAjax() {
+	$.ajax({
+		type: 'GET',
+		url: 'state',
+		dataType: 'json',
+		success: function (data) {
+			if(data.state == "Ready1") {
+				interval = setTimeout(callAjax, 2000);
+				return;
+			}
+			if(data.state != "Ready") {
+				waitingDialog.show(data.state, {progressType: 'warning'});
+			}
+			else {
+				waitingDialog.hide();
+				location.reload();
+			}
+			interval = setTimeout(callAjax, 2000);
+		}
+	});
+}
+callAjax();
+</script>
+<script>
+$(document).ready(function () {           
+	$('.NO-CACHE').attr('src',function () { return $(this).attr('src') + "?a=" + Math.random() });
+});
+</script>
 </body>
 </html>

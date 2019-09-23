@@ -4,15 +4,13 @@
 {% block content %}
 
 <div class="container">
-
     <div class="row justify-content-sm-center">
         <div class="col-sm-10 p-2">
             <div class="card">
                 <div class="card-body">
-                    <a href="{% url "index" %}" class="btn btn-primary float-right" style="width: 4in;">Refresh</a>
                     <h5 class="card-title">Camera Snapshot</h5>
                 </div>
-                <img class="card-img-top" src="{% static "processed.jpg" %}" alt="Camera Snapshot" style="width: 932px; height: 500px; object-fit: fill">
+                <img class="card-img-top NO-CACHE" src="{% static "processed.jpg" %}" alt="Camera Snapshot" style="object-fit: fill">
                 <div class="card-body">
                     <h5 class="card-title">Brief description of the scenery</h5>
                     <p class="card-text">{{ positional_desc }}</p>
@@ -20,47 +18,6 @@
             </div>
         </div>
     </div>
-
-    <hr>
-
-    <div class="row">
-        <div class="card-deck">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Central Attention</h5>
-                </div>
-                <img class="card-img-top" src="{% static "attention_img.jpg" %}" style="max-height:300px; object-fit: contain" alt="Camera Snapshot">
-                <div class="card-body">
-                    <p class="card-text">{{ attention }}</p>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Emergency</h5>
-                    <a class="btn btn-danger m-2">Alert</a>
-                    <a class="btn btn-danger m-2">Phone Call</a>
-                    <a class="btn btn-danger m-2">Text Message</a>
-                    <a class="btn btn-danger m-2">Know location</a>
-                    <a class="btn btn-danger m-2">Know stick accelerometer data</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <hr>
-
-    <div class="row">
-        <div class="col-10">
-            <h2>Sonar value : </h2>
-            <p> &nbsp;&nbsp;&nbsp;&nbsp;Object approximately {{ sonar_dist }} meters away</p>
-        </div>
-        <div class="col-10">
-            <h2>Positional Description</h2>
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ activity_desc }}</p>
-        </div>
-    </div>
-
-
 </div>
 
 {% endblock content %}

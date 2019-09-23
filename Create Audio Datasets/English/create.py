@@ -1,0 +1,126 @@
+from gtts import gTTS
+import pickle
+from pydub import AudioSegment
+
+words = [
+	'person',
+	'bicycle',
+	'car',
+	'motorcycle',
+	'airplane',
+	'bus',
+	'train',
+	'truck',
+	'boat',
+	'traffic light',
+	'fire hydrant',
+	'stop sign',
+	'parking meter',
+	'bench',
+	'bird',
+	'cat',
+	'dog',
+	'horse',
+	'sheep',
+	'cow',
+	'elephant',
+	'bear',
+	'zebra',
+	'giraffe',
+	'backpack',
+	'umbrella',
+	'handbag',
+	'tie',
+	'suitcase',
+	'frisbee',
+	'skis',
+	'snowboard',
+	'sports ball',
+	'kite',
+	'baseball bat',
+	'baseball glove',
+	'skateboard',
+	'surfboard',
+	'tennis racket',
+	'bottle',
+	'wine glass',
+	'cup',
+	'fork',
+	'knife',
+	'spoon',
+	'bowl',
+	'banana',
+	'apple',
+	'sandwich',
+	'orange',
+	'broccoli',
+	'carrot',
+	'hot dog',
+	'pizza',
+	'donut',
+	'cake',
+	'chair',
+	'couch',
+	'potted plant',
+	'bed',
+	'dining table',
+	'toilet',
+	'tv',
+	'laptop',
+	'mouse',
+	'remote',
+	'keyboard',
+	'cell phone',
+	'microwave',
+	'oven',
+	'toaster',
+	'sink',
+	'refrigerator',
+	'book',
+	'clock',
+	'vase',
+	'scissors',
+	'teddy bear',
+	'hair drier',
+	'toothbrush',
+
+	'0',
+	'1',
+	'2',
+	'3',
+	'4',
+	'5',
+	'6',
+	'7',
+	'8',
+	'9',
+	'10',
+
+	'In front, there',
+	'are',
+	'is',
+	'a',
+	'an',
+	'There is nothing interesting in front.',
+	'On the right, you get',
+	'Your left have',
+	'On the top right, you get',
+	'Bottom right have',
+	'Upper left have',
+	'Bottom left have'
+]
+
+data = {}
+for j, i in enumerate(words):
+	print(j, i)
+	tts = gTTS(i, 'en')
+	tts.save('temp.mp3')
+
+	sound = AudioSegment.from_mp3('temp.mp3')[100:-100]
+
+	data[i] = sound
+
+print('Successfully created pickle file')
+
+with open('en.pickle', 'wb') as f:
+	pickle.dump(data, f)
